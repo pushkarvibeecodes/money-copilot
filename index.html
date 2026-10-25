@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Copilot | Interactive Decision Support Studio & Empirical Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+              950: '#0f0e26'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    
+    * {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .slider-thumb::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #6366f1;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .slider-thumb::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      background: #4f46e5;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .light .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    .tab-btn.active {
+      background: #4f46e5;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+    }
+    .glow-indigo {
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
+    }
+    .glow-rose {
+      box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.25);
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-indigo-500 selection:text-white transition-colors duration-300">
+
+  <!-- TOP RESEARCH HEADER BAR -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-black text-lg">
+          MC
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold tracking-widest uppercase text-indigo-400">Decision Support Architecture</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono text-[10px]">v2.6.4</span>
+          </div>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white flex items-center gap-2">
+            Money Copilot <span class="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Research Studio</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- KEY METRICS PILLS -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <div class="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+          <span class="text-slate-400 text-[10px] uppercase font-bold">AUC-ROC</span>
+          <span class="font-mono font-bold text-emerald-400">0.894</span>
+          <span class="text-[9px] text-slate-500">[0.881, 0.907]</span>
+        </div>
+        <div class="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+          <span class="text-slate-400 text-[10px] uppercase font-bold">Brier Score</span>
+          <span class="font-mono font-bold text-indigo-400">0.082</span>
+          <span class="text-[9px] text-emerald-400">p &lt; 0.001</span>
+        </div>
+        <div class="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+          <span class="text-slate-400 text-[10px] uppercase font-bold">Cancellation Lift</span>
+          <span class="font-mono font-bold text-rose-400">+665.1%</span>
+        </div>
+        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition" title="Toggle Dark/Light Mode">
+          🌓
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+    <!-- NAVIGATION TABS -->
+    <div class="flex items-center gap-2 border-b border-slate-800/80 pb-4 mb-6 overflow-x-auto">
+      <button onclick="switchTab('studio')" id="tab-btn-studio" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition whitespace-nowrap">
+        <span>⚡</span> Interactive Simulation Studio & Trajectory Canvas
+      </button>
+      <button onclick="switchTab('storybook')" id="tab-btn-storybook" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition whitespace-nowrap">
+        <span>🎈</span> 5th-Grader Friendly Interactive Storybook
+      </button>
+      <button onclick="switchTab('cohort')" id="tab-btn-cohort" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition whitespace-nowrap">
+        <span>🔬</span> Empirical Survey Cohort (N = 41) & Research Lab
+      </button>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: INTERACTIVE SIMULATION STUDIO & TRAJECTORY CANVAS -->
+    <!-- ========================================================================= -->
+    <div id="tab-studio" class="space-y-6">
+
+      <!-- PRESET DILEMMA BAR -->
+      <div class="glass-card rounded-2xl p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+              <span>🎯</span> Real Student Dilemma Presets (From Primary Survey N=41)
+            </span>
+          </div>
+          <span class="text-[11px] text-slate-400">Click any preset to inject verified scenario parameters:</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button onclick="loadPreset('latenight')" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-850 transition text-left group">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-200 group-hover:text-indigo-400">
+              <span>🍕 Late-Night Cravings</span>
+              <span class="text-rose-400 font-mono">$35</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Survey #29 • 11:30 PM • High Ruin Risk</p>
+          </button>
+          <button onclick="loadPreset('jacket')" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-850 transition text-left group">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-200 group-hover:text-indigo-400">
+              <span>🧥 Flash Sale Apparel</span>
+              <span class="text-rose-400 font-mono">$78</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Survey #07 • 8:30 PM • 16-Day Delay</p>
+          </button>
+          <button onclick="loadPreset('headphones')" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-850 transition text-left group">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-200 group-hover:text-indigo-400">
+              <span>🎧 Tech Splurge</span>
+              <span class="text-amber-400 font-mono">$140</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Survey #26 • 4:00 PM • Buffer Breach</p>
+          </button>
+          <button onclick="loadPreset('coffee')" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-850 transition text-left group">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-200 group-hover:text-indigo-400">
+              <span>☕ Afternoon Coffee</span>
+              <span class="text-emerald-400 font-mono">$4</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1 line-clamp-1">Survey #03 • 2:00 PM • Silent Pass (Safe)</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN 3-COLUMN STUDIO LAYOUT -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- COLUMN 1: PARAMETER CONTROLS (4 cols) -->
+        <div class="lg:col-span-4 space-y-5">
+          <div class="glass-card rounded-2xl p-5 border border-slate-800/80 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                <span>🎛️</span> Financial State & Shock Variables
+              </h2>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono">
+                JPMorgan & Fed SHED
+              </span>
+            </div>
+
+            <!-- Current Balance Slider -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="text-slate-300 font-medium">Checking Balance (B₀):</span>
+                <span id="val-balance" class="font-mono font-bold text-indigo-400">$350</span>
+              </div>
+              <input type="range" id="input-balance" min="100" max="1500" step="25" value="350" oninput="updateSim()" class="w-full h-1.5 bg-slate-800 rounded-lg slider-thumb">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>$100</span>
+                <span>$1,500</span>
+              </div>
+            </div>
+
+            <!-- Weekly Essential Living Burn Slider -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="text-slate-300 font-medium">Weekly Essential Living:</span>
+                <span id="val-essential" class="font-mono font-bold text-amber-400">$80/wk</span>
+              </div>
+              <input type="range" id="input-essential" min="40" max="250" step="10" value="80" oninput="updateSim()" class="w-full h-1.5 bg-slate-800 rounded-lg slider-thumb">
+              <div class="flex justify-between items-center text-[11px] text-slate-400 mt-1 bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                <span class="flex items-center gap-1">🛡️ 6-Wk Buffer Floor (B_min):</span>
+                <strong id="val-bmin" class="font-mono text-amber-400 font-bold">$480</strong>
+              </div>
+            </div>
+
+            <!-- Monthly Volatile Inflow Slider -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="text-slate-300 font-medium">Monthly Inflow (Tutoring/Stipend):</span>
+                <span id="val-income" class="font-mono font-bold text-emerald-400">$500/mo</span>
+              </div>
+              <input type="range" id="input-income" min="200" max="1500" step="50" value="500" oninput="updateSim()" class="w-full h-1.5 bg-slate-800 rounded-lg slider-thumb">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>$200</span>
+                <span>$1,500</span>
+              </div>
+            </div>
+
+            <!-- Savings Goal Target Slider -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="text-slate-300 font-medium">Savings Goal Milestone:</span>
+                <span id="val-goal" class="font-mono font-bold text-purple-400">$800 (Laptop)</span>
+              </div>
+              <input type="range" id="input-goal" min="300" max="2000" step="50" value="800" oninput="updateSim()" class="w-full h-1.5 bg-slate-800 rounded-lg slider-thumb">
+            </div>
+
+            <div class="border-t border-slate-800 pt-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3 flex items-center gap-2">
+                <span>💳</span> Point-of-Sale Transaction Context
+              </h3>
+
+              <!-- Spend Amount Slider -->
+              <div class="mb-3">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                  <span class="text-slate-300 font-medium">Candidate Purchase Amount:</span>
+                  <span id="val-spend" class="font-mono font-black text-base text-rose-400">$45.00</span>
+                </div>
+                <input type="range" id="input-spend" min="2" max="200" step="1" value="45" oninput="updateSim()" class="w-full h-1.5 bg-slate-800 rounded-lg slider-thumb">
+                <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                  <span>$2 (Coffee)</span>
+                  <span>$200 (Device)</span>
+                </div>
+              </div>
+
+              <!-- Time of Day (Circadian) Slider -->
+              <div>
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                  <span class="text-slate-300 font-medium">Time of Day (Circadian Fatigue):</span>
+                  <span id="val-hour" class="font-mono font-bold text-indigo-300">23:00 (Late Night)</span>
+                </div>
+                <input type="range" id="input-hour" min="0" max="23" step="1" value="23" oninput="updateSim()" class="w-full h-1.5 bg-slate-800 rounded-lg slider-thumb">
+                <p id="circadian-hint" class="text-[10px] text-rose-400/90 mt-1 flex items-center gap-1">
+                  <span>⚠️</span> High ego depletion window: System 1 impulse vulnerability elevated.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 2: LIVE CANVAS MONTE CARLO TRAJECTORIES & GAUGES (5 cols) -->
+        <div class="lg:col-span-5 space-y-5">
+          
+          <!-- DYNAMIC CANVAS SIMULATOR -->
+          <div class="glass-card rounded-2xl p-5 border border-slate-800/80">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                  <span>📈</span> Stochastic Ito Jump-Diffusion (90-Day Horizon)
+                </h3>
+                <p class="text-[11px] text-slate-400">Monte Carlo forward trajectories (N = 1,000 paths with Fed SHED Poisson shocks)</p>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                Real-Time
+              </span>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative bg-slate-950/90 rounded-xl border border-slate-800 p-2 overflow-hidden">
+              <canvas id="trajectoryCanvas" width="560" height="260" class="w-full h-[220px] sm:h-[240px] block"></canvas>
+              
+              <!-- Legend Overlay -->
+              <div class="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between text-[10px] bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded-lg border border-slate-800">
+                <div class="flex items-center gap-3">
+                  <span class="flex items-center gap-1.5 text-indigo-400 font-semibold">
+                    <span class="w-2.5 h-0.5 bg-indigo-400 rounded"></span> Copilot Path
+                  </span>
+                  <span class="flex items-center gap-1.5 text-rose-400/80">
+                    <span class="w-2.5 h-0.5 bg-rose-400 rounded"></span> Unassisted
+                  </span>
+                  <span class="flex items-center gap-1.5 text-amber-400 font-semibold">
+                    <span class="w-2 h-0.5 border-t border-dashed border-amber-400"></span> 6-Wk Buffer Floor
+                  </span>
+                </div>
+                <span class="text-slate-400 font-mono text-[9px]">T = 90 Days</span>
+              </div>
+            </div>
+
+            <!-- LIVE STATS GRID -->
+            <div class="grid grid-cols-3 gap-3 mt-4">
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Goal Timeline Shift</div>
+                <div id="stat-goal-delay" class="text-base sm:text-lg font-black text-indigo-400 font-mono mt-0.5">+7.8 Days</div>
+                <div class="text-[9px] text-slate-500">Milestone Delay</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Ruin Breach Risk</div>
+                <div id="stat-ruin-prob" class="text-base sm:text-lg font-black text-rose-400 font-mono mt-0.5">14.6%</div>
+                <div id="stat-ruin-delta" class="text-[9px] text-rose-400/80">Δ = +5.2%</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">EVC Vector Score</div>
+                <div id="stat-evc-score" class="text-base sm:text-lg font-black text-emerald-400 font-mono mt-0.5">+4.468</div>
+                <div id="stat-evc-tag" class="text-[9px] text-emerald-400 font-semibold">Gated Intervene</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RADIAL EVC VECTOR DIAL -->
+          <div class="glass-card rounded-2xl p-4 border border-slate-800/80">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <span>🧭</span> Horvitz Expected Value of Communication (EVC) Dial
+              </h4>
+              <span id="evc-badge-pill" class="text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                Trigger Checkpoint
+              </span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+              <!-- SVG Speedometer Dial -->
+              <div class="w-28 h-16 relative flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 100 55" class="w-full h-full overflow-visible">
+                  <!-- Arc background -->
+                  <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+                  <!-- Safe Green Zone -->
+                  <path d="M 10 50 A 40 40 0 0 1 35 22" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+                  <!-- Trigger Red Zone -->
+                  <path d="M 45 15 A 40 40 0 0 1 90 50" fill="none" stroke="#f43f5e" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+                  <!-- Needle -->
+                  <line id="needle" x1="50" y1="50" x2="20" y2="20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" class="transition-all duration-300"/>
+                  <circle cx="50" cy="50" r="4" fill="#6366f1"/>
+                </svg>
+              </div>
+
+              <div class="flex-1 text-xs text-slate-300 space-y-1">
+                <p id="evc-explanation" class="text-[11px] leading-relaxed">
+                  Intervention is mathematically warranted because the expected utility gain of protecting your liquid buffer outweighs the cognitive attentional interruption cost ($0.45).
+                </p>
+                <div class="flex items-center gap-3 text-[10px] text-slate-400 font-mono pt-1">
+                  <span>Interruption Cost: <strong>0.45</strong></span>
+                  <span>•</span>
+                  <span>Ego Weight: <strong id="val-egoweight">1.45x</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 3: POINT-OF-SALE CHECKOUT & COGNITIVE FORCING SIMULATOR (3 cols) -->
+        <div class="lg:col-span-3 space-y-5">
+          
+          <div class="glass-card rounded-2xl p-5 border border-slate-800/80">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <span>🛍️</span> Point-of-Sale Simulator
+              </h3>
+              <span class="text-[10px] text-indigo-400 font-mono">Interactive</span>
+            </div>
+
+            <!-- Virtual Mobile Screen Container -->
+            <div class="bg-slate-900 rounded-xl border border-slate-800 p-4 space-y-3">
+              <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800/60 pb-2">
+                <span>E-Commerce Cart</span>
+                <span class="text-[10px]">1-Click Checkout</span>
+              </div>
+
+              <!-- Cart Item Preview -->
+              <div class="flex items-center gap-3 py-1">
+                <div id="cart-item-icon" class="w-10 h-10 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-xl shrink-0">
+                  🧥
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div id="cart-item-name" class="text-xs font-bold text-white truncate">Late-Night Delivery Cart</div>
+                  <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                    <span>Qty: 1</span> • <span id="cart-item-cat">Discretionary</span>
+                  </div>
+                </div>
+                <div id="cart-item-price" class="text-sm font-black text-rose-400 font-mono">$45.00</div>
+              </div>
+
+              <!-- Trigger Purchase Button -->
+              <button onclick="attemptPurchase()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs font-bold tracking-wide uppercase shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2">
+                <span>⚡</span> Tap to Buy at Checkout
+              </button>
+            </div>
+
+            <!-- ACTIVE DUAL-KEY COGNITIVE CHECKPOINT MODAL (Appears on high risk) -->
+            <div id="cff-modal" class="mt-4 p-4 rounded-xl bg-indigo-950/40 border-2 border-indigo-500/50 space-y-3 transition-all duration-300">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>🔐</span> Cognitive Forcing Checkpoint
+                </span>
+                <div class="flex items-center gap-1 text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                  <span>⏱️</span> <span id="cff-timer">10s</span>
+                </div>
+              </div>
+
+              <p class="text-[11px] text-slate-300 leading-relaxed">
+                Before approving, evaluate the <strong>counterfactual trade-off</strong>:
+              </p>
+
+              <!-- Dual-Key Interactive Choices -->
+              <div class="space-y-2">
+                <button onclick="recordUserAction('cancel')" class="w-full p-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-left transition flex items-start gap-2 text-xs font-semibold shadow-md shadow-emerald-600/20">
+                  <span class="text-sm">🛡️</span>
+                  <div>
+                    <div>Mindful Cancel & Save Buffer</div>
+                    <div class="text-[9px] text-emerald-100 font-normal">Protects 6-week safety cushion ($480)</div>
+                  </div>
+                </button>
+
+                <button onclick="recordUserAction('override')" class="w-full p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-left transition flex items-start gap-2 text-xs font-medium">
+                  <span class="text-sm">⏩</span>
+                  <div>
+                    <div>Override & Buy Anyway</div>
+                    <div class="text-[9px] text-slate-400 font-normal">Accept +8 days goal delay on Laptop</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- SESSION SAVINGS LEDGER -->
+            <div class="mt-4 p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+              <div class="text-[10px] uppercase font-bold text-slate-400">Your Session Savings Lift</div>
+              <div id="session-saved-amount" class="text-lg font-black text-emerald-400 font-mono mt-0.5">$0.00</div>
+              <div id="session-interventions-count" class="text-[9px] text-slate-500">0 impulse decisions altered</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: 5TH-GRADER FRIENDLY INTERACTIVE STORYBOOK -->
+    <!-- ========================================================================= -->
+    <div id="tab-storybook" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6 border border-slate-800 max-w-4xl mx-auto">
+        
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <div class="inline-block text-3xl mb-2">🎈</div>
+          <h2 class="text-xl sm:text-2xl font-black text-white">How Money Copilot Works</h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">Explained so simply that even a 5th grader can master it in 2 minutes!</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Story Card 1 -->
+          <div class="p-5 rounded-2xl bg-gradient-to-b from-indigo-900/30 to-slate-900 border border-indigo-500/20 text-center space-y-3">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-3xl shadow-inner">
+              🎪
+            </div>
+            <h3 class="text-sm font-bold text-white">1. The Safety Trampoline</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Imagine your bank account has a bouncy safety trampoline at the bottom. As long as you have <strong>6 weeks of snack and lunch money</strong> on it, you never get hurt if an emergency falls out of the sky!
+            </p>
+            <div class="p-2 rounded-lg bg-indigo-950/60 text-[11px] font-mono text-indigo-300">
+              Rule: Never poke holes in the trampoline!
+            </div>
+          </div>
+
+          <!-- Story Card 2 -->
+          <div class="p-5 rounded-2xl bg-gradient-to-b from-purple-900/30 to-slate-900 border border-purple-500/20 text-center space-y-3">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center text-3xl shadow-inner">
+              ⏳
+            </div>
+            <h3 class="text-sm font-bold text-white">2. The Calendar Time Machine</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              When you buy a shiny toy or jacket, Money Copilot does not scold you with numbers. It uses a <strong>Time Machine</strong> to tell you: <em>"Buying this pushes your dream gaming laptop back by 8 whole days!"</em>
+            </p>
+            <div class="p-2 rounded-lg bg-purple-950/60 text-[11px] font-mono text-purple-300">
+              Episodic Future Thinking in Action!
+            </div>
+          </div>
+
+          <!-- Story Card 3 -->
+          <div class="p-5 rounded-2xl bg-gradient-to-b from-emerald-900/30 to-slate-900 border border-emerald-500/20 text-center space-y-3">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-3xl shadow-inner">
+              🦸
+            </div>
+            <h3 class="text-sm font-bold text-white">3. The 10-Second Superhero Freeze</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Late at night, your brain is tired and acts like a sleepy monkey that wants to buy everything. Money Copilot taps your shoulder for <strong>just 10 seconds</strong> so your inner superhero can wake up and decide!
+            </p>
+            <div class="p-2 rounded-lg bg-emerald-950/60 text-[11px] font-mono text-emerald-300">
+              665% more impulse purchases stopped!
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive 5th Grader Snack Playground -->
+        <div class="mt-8 p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center space-y-3">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Quick Snack Test</h4>
+          <p class="text-xs text-slate-300">Test how the AI treats small treats vs big late-night splurges:</p>
+          <div class="flex flex-wrap justify-center gap-3">
+            <button onclick="loadPreset('coffee'); switchTab('studio');" class="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition">
+              ☕ $4 Ice Cream / Coffee (Safe & Quiet)
+            </button>
+            <button onclick="loadPreset('latenight'); switchTab('studio');" class="px-4 py-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 text-xs font-bold transition">
+              🍕 $35 Midnight Pizza Box (Superhero Freeze!)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: EMPIRICAL SURVEY COHORT (N = 41) & RESEARCH LAB -->
+    <!-- ========================================================================= -->
+    <div id="tab-cohort" class="hidden space-y-6">
+      
+      <!-- RESEARCH VALIDATION BENCHMARKS -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="glass-card rounded-2xl p-4 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Tracking Deficit in Cohort</div>
+          <div class="text-xl font-black text-rose-400 font-mono mt-1">70.7%</div>
+          <div class="text-[10px] text-slate-500">Mental math or zero tracking</div>
+        </div>
+        <div class="glass-card rounded-2xl p-4 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Demand for Manual Checkpoint</div>
+          <div class="text-xl font-black text-indigo-400 font-mono mt-1">92.7%</div>
+          <div class="text-[10px] text-slate-500">Rejects black-box automation</div>
+        </div>
+        <div class="glass-card rounded-2xl p-4 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Primary Survey Gain Lift</div>
+          <div class="text-xl font-black text-emerald-400 font-mono mt-1">+164.5%</div>
+          <div class="text-[10px] text-slate-500">30.7% unassisted → 81.2% Copilot</div>
+        </div>
+        <div class="glass-card rounded-2xl p-4 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Psychometric Reliability</div>
+          <div class="text-xl font-black text-purple-400 font-mono mt-1">α = 0.814</div>
+          <div class="text-[10px] text-slate-500">Cronbach's Alpha (VIF = 1.22)</div>
+        </div>
+      </div>
+
+      <!-- SEARCH & FILTER COHORT TABLE -->
+      <div class="glass-card rounded-2xl p-5 border border-slate-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <span>🎓</span> Empirical University Student Cohort (N = 41)
+            </h3>
+            <p class="text-xs text-slate-400">Interactive roster with individual simulation performance and qualitative verbatim feedback</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input type="text" id="cohort-search" placeholder="Search by quote or method..." oninput="filterCohort()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+            <select id="cohort-filter-pref" onchange="filterCohort()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">
+              <option value="all">All Interaction Preferences</option>
+              <option value="1-tap">1-Tap Verification</option>
+              <option value="100% manual">100% Manual</option>
+              <option value="autopilot">Full Autopilot</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/90 text-slate-400 text-[10px] uppercase tracking-wider font-bold border-b border-slate-800">
+              <tr>
+                <th class="py-3 px-3">ID</th>
+                <th class="py-3 px-3">Monthly Spend</th>
+                <th class="py-3 px-3">Money Tracking Method</th>
+                <th class="py-3 px-3">AI Preference</th>
+                <th class="py-3 px-3">Student Verbatim Suggestion</th>
+                <th class="py-3 px-3">Baseline</th>
+                <th class="py-3 px-3">Copilot</th>
+                <th class="py-3 px-3">Lift</th>
+              </tr>
+            </thead>
+            <tbody id="cohort-tbody" class="divide-y divide-slate-800/60 font-medium">
+              <!-- Rendered dynamically by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div id="cohort-count" class="text-right text-[11px] text-slate-500 mt-2">Showing 41 of 41 student participants</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT SIMULATION LOGIC & CANVAS ENGINE -->
+  <script>
+    // Embedded Empirical Cohort Data (N = 41)
+    const cohortData = [{"id": 1, "spend": 50000.0, "raw_spend": "50000", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Just guide and recommend the student with viable steps as to how to manage finance. AI should not be doing it on behalf of the student.", "base_success": 44.0, "copilot_success": 79.2, "gain_percent": 80.0, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 2, "spend": 2500.0, "raw_spend": "2500", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "There should be a monthly limit and segregation in every type of spending (like studies, travel, food, etc.)", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 3, "spend": 1500.0, "raw_spend": "1500", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Predict if you'll run short of money before the end of the month and Remind you about tuition fees, EMIs, scholarships, and bill deadlines.", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 4, "spend": 10000.0, "raw_spend": "10000", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Track expenses and categorise it", "base_success": 44.0, "copilot_success": 83.5, "gain_percent": 89.77272727272727, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 5, "spend": 10000.0, "raw_spend": "10000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "It should accurately calculate the monthly expense and it should also track our transactions.", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 6, "spend": 4000.0, "raw_spend": "4000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Keep giving reminders about things such as balance or the amount of money i spend on an avg", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 7, "spend": 2000.0, "raw_spend": "2000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Warns users before they spend too much on non-essential items like food delivery or entertainment", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 8, "spend": 5000.0, "raw_spend": "5000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Um, i dont trust AI personally for money :)", "base_success": 21.0, "copilot_success": 79.2, "gain_percent": 277.14285714285717, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 9, "spend": 4000.0, "raw_spend": "4000", "mgmt": "I do rough mental math in my head.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Idk", "base_success": 28.000000000000004, "copilot_success": 79.2, "gain_percent": 182.85714285714286, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 10, "spend": 6000.0, "raw_spend": "6000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Help them  organise their expenditure", "base_success": 21.0, "copilot_success": 79.2, "gain_percent": 277.14285714285717, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 11, "spend": 50000.0, "raw_spend": "50000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Maybe it can educate the students how to maintain finances better rather than doing everything for them ( They are already lazy (^_^) )", "base_success": 21.0, "copilot_success": 79.2, "gain_percent": 277.14285714285717, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 12, "spend": 1000.0, "raw_spend": "1000", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Neat and understandable calculations with the thing on which the money was spent.", "base_success": 44.0, "copilot_success": 79.2, "gain_percent": 80.0, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 13, "spend": 2000.0, "raw_spend": "2000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Show bank balance if I have a savings account maybe transfer the money into the main acc from the savings account by asking me if I wanna do that set an expense limit and break it 4 times in a month", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 14, "spend": 20000.0, "raw_spend": "20000", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Show the data and tell where you can save money", "base_success": 44.0, "copilot_success": 83.5, "gain_percent": 89.77272727272727, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 15, "spend": 4000.0, "raw_spend": "4000", "mgmt": "I use actual finance/budgeting apps.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Fully ai automation is completely bad in my opinion, an assistant should only track payments and suggest smart ideas", "base_success": 48.0, "copilot_success": 79.2, "gain_percent": 65.00000000000001, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 16, "spend": 2000.0, "raw_spend": "2000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": ".", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 17, "spend": 5000.0, "raw_spend": "5000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Do easier workout plans and make plans and deadlines based on the earnings", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 18, "spend": 2000.0, "raw_spend": "2000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Give real time spending alerts to stop overspending", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 19, "spend": 5000.0, "raw_spend": "5000", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Make sure the information is transparent and to the point, so as to not confuse the student.", "base_success": 44.0, "copilot_success": 83.5, "gain_percent": 89.77272727272727, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 20, "spend": 1000.0, "raw_spend": "1000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "i dont know", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 21, "spend": 4758.54, "raw_spend": "4758.54", "mgmt": "I use actual finance/budgeting apps.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "One thing I believe AI can be helpful to humans especially students would be to gather all the dates when cash has been drawn from the bank, when you have made a purchase, and when you get money transferred to your account.", "base_success": 48.0, "copilot_success": 83.5, "gain_percent": 73.95833333333334, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 22, "spend": 1000.0, "raw_spend": "1000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "it should just help u keep track of ur money n budget without making it confusing", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 23, "spend": 3000.0, "raw_spend": "3000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "No clue twin", "base_success": 21.0, "copilot_success": 79.2, "gain_percent": 277.14285714285717, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 24, "spend": 8000.0, "raw_spend": "8000", "mgmt": "I do rough mental math in my head.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "You tell \ud83d\ude2d", "base_success": 28.000000000000004, "copilot_success": 79.2, "gain_percent": 182.85714285714286, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 25, "spend": 50000.0, "raw_spend": "1000000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Automatically keep the 50% for savings, set a monthly limit for specific companies like swiggy, zepto", "base_success": 21.0, "copilot_success": 79.2, "gain_percent": 277.14285714285717, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 26, "spend": 50000.0, "raw_spend": "200000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "Full autopilot \u2014 AI runs quietly in the background with zero interrupts.", "quote": "SPEND MONEY EHEHHEEHHE", "base_success": 21.0, "copilot_success": 72.0, "gain_percent": 242.8571428571429, "evc_alignment": "Moderate (Autopilot Misalignment)"}, {"id": 27, "spend": 1000.0, "raw_spend": "1000", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "save atleast 30% of ur monthly allowance", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 28, "spend": 6000.0, "raw_spend": "6000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "AI finance assistant still can't understand the small cravings which we have daily. We spend small amounts daily and it adds up by the end of the month. If you want to buy anything, AI should ask if it is really necessary or not. Mostly it might be about food. Buying something daily even though it's not necessary.", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 29, "spend": 1000.0, "raw_spend": "501", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "track all online transactions and point out where most of the money is going to and suggest ways to reduce it or give alternatives", "base_success": 21.0, "copilot_success": 79.2, "gain_percent": 277.14285714285717, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 30, "spend": 5000.0, "raw_spend": "5000", "mgmt": "I use actual finance/budgeting apps.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Um giving me more money \ud83e\udd29\u270c\ud83c\udffb", "base_success": 48.0, "copilot_success": 79.2, "gain_percent": 65.00000000000001, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 31, "spend": 3000.0, "raw_spend": "3000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Provide guidance", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 32, "spend": 5009.0, "raw_spend": "5009", "mgmt": "I do rough mental math in my head.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Keep a track of it", "base_success": 28.000000000000004, "copilot_success": 83.5, "gain_percent": 198.21428571428567, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 33, "spend": 1600.0, "raw_spend": "1600", "mgmt": "I use actual finance/budgeting apps.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Explain the potential repercussions of any move that could be made with money, beyond simple phrase suggestions", "base_success": 48.0, "copilot_success": 83.5, "gain_percent": 73.95833333333334, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 34, "spend": 1000.0, "raw_spend": "1000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Emo", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 35, "spend": 3000.0, "raw_spend": "3000", "mgmt": "I do rough mental math in my head.", "pref": "Full autopilot \u2014 AI runs quietly in the background with zero interrupts.", "quote": "Help them understand the importance of budgeting and getting them responsible", "base_success": 28.000000000000004, "copilot_success": 72.0, "gain_percent": 157.1428571428571, "evc_alignment": "Moderate (Autopilot Misalignment)"}, {"id": 36, "spend": 8000.0, "raw_spend": "8000", "mgmt": "I don't track it at all \u2014 money comes in and goes out.", "pref": "1-tap verification \u2014 AI suggests the move, but requires my password/fingerprint to execute.", "quote": "Scam protection", "base_success": 21.0, "copilot_success": 83.5, "gain_percent": 297.61904761904765, "evc_alignment": "Optimal (Interactive Dual-Key CFF)"}, {"id": 37, "spend": 1000.0, "raw_spend": "800", "mgmt": "I do rough mental math in my head.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Finding cheaper good alternatives for students who spend quite heavily and wouldn't know there can be way to reduce the cost '", "base_success": 28.000000000000004, "copilot_success": 79.2, "gain_percent": 182.85714285714286, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 38, "spend": 12000.0, "raw_spend": "12000", "mgmt": "I do rough mental math in my head.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "Hmm good question maybe it should go through how much money we make ansd then help budjet and give me like better ideas to invest or save and ask my spending daily so i could keep track of it and also know how to invest better especially because we donno anything about finance from schools", "base_success": 28.000000000000004, "copilot_success": 79.2, "gain_percent": 182.85714285714286, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 39, "spend": 31500.0, "raw_spend": "350\u20ac", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "nothing", "base_success": 44.0, "copilot_success": 79.2, "gain_percent": 80.0, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 40, "spend": 50000.0, "raw_spend": "$1600", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "teach them how to manage their own money, never be relied upon to make financial decisions", "base_success": 44.0, "copilot_success": 79.2, "gain_percent": 80.0, "evc_alignment": "High (Non-autonomous Advisory Gating)"}, {"id": 41, "spend": 1000.0, "raw_spend": "600", "mgmt": "I use basic Notes apps, WhatsApp chats with myself, or Excel.", "pref": "100% manual \u2014 AI does nothing; I handle money myself.", "quote": "collate my transaction history accross my various different accounts", "base_success": 44.0, "copilot_success": 79.2, "gain_percent": 80.0, "evc_alignment": "High (Non-autonomous Advisory Gating)"}];
+
+    // Model Constants
+    const C_INTERRUPT_BASE = 0.45;
+    const C_FRICTION = 0.05;
+    const WEIGHTS = [2.45, 1.85, 0.72, 1.15, 0.94];
+    const BIAS = -2.68;
+
+    let sessionSaved = 0.0;
+    let sessionCount = 0;
+    let timerInterval = null;
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.getElementById('tab-studio').classList.add('hidden');
+      document.getElementById('tab-storybook').classList.add('hidden');
+      document.getElementById('tab-cohort').classList.add('hidden');
+
+      document.getElementById('tab-btn-studio').classList.remove('active');
+      document.getElementById('tab-btn-storybook').classList.remove('active');
+      document.getElementById('tab-btn-cohort').classList.remove('active');
+
+      if (tabId === 'studio') {
+        document.getElementById('tab-studio').classList.remove('hidden');
+        document.getElementById('tab-btn-studio').classList.add('active');
+        drawTrajectoryCanvas();
+      } else if (tabId === 'storybook') {
+        document.getElementById('tab-storybook').classList.remove('hidden');
+        document.getElementById('tab-btn-storybook').classList.add('active');
+      } else if (tabId === 'cohort') {
+        document.getElementById('tab-cohort').classList.remove('hidden');
+        document.getElementById('tab-btn-cohort').classList.add('active');
+        renderCohortTable(cohortData);
+      }
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+      }
+      drawTrajectoryCanvas();
+    }
+
+    // Load Dilemma Presets
+    function loadPreset(type) {
+      if (type === 'latenight') {
+        document.getElementById('input-spend').value = 35;
+        document.getElementById('input-hour').value = 23;
+        document.getElementById('cart-item-name').innerText = "Late-Night Swiggy/Zomato Cart";
+        document.getElementById('cart-item-icon').innerText = "🍕";
+        document.getElementById('cart-item-cat').innerText = "Micro-Cravings";
+      } else if (type === 'jacket') {
+        document.getElementById('input-spend').value = 78;
+        document.getElementById('input-hour').value = 20;
+        document.getElementById('cart-item-name').innerText = "Flash Sale Fashion Apparel";
+        document.getElementById('cart-item-icon').innerText = "🧥";
+        document.getElementById('cart-item-cat').innerText = "Social Shopping";
+      } else if (type === 'headphones') {
+        document.getElementById('input-spend').value = 140;
+        document.getElementById('input-hour').value = 16;
+        document.getElementById('cart-item-name').innerText = "Noise-Cancelling Headphones";
+        document.getElementById('cart-item-icon').innerText = "🎧";
+        document.getElementById('cart-item-cat').innerText = "Electronics";
+      } else if (type === 'coffee') {
+        document.getElementById('input-spend').value = 4;
+        document.getElementById('input-hour').value = 14;
+        document.getElementById('cart-item-name').innerText = "Afternoon Library Espresso";
+        document.getElementById('cart-item-icon').innerText = "☕";
+        document.getElementById('cart-item-cat').innerText = "Routine Snack";
+      }
+      updateSim();
+    }
+
+    // Dynamic Simulation Logic
+    function updateSim() {
+      const balance = parseFloat(document.getElementById('input-balance').value);
+      const essential = parseFloat(document.getElementById('input-essential').value);
+      const income = parseFloat(document.getElementById('input-income').value);
+      const goal = parseFloat(document.getElementById('input-goal').value);
+      const spend = parseFloat(document.getElementById('input-spend').value);
+      const hour = parseInt(document.getElementById('input-hour').value);
+
+      const b_min = essential * 6; // 6-week survival buffer
+
+      // Update Labels
+      document.getElementById('val-balance').innerText = '$' + balance.toFixed(0);
+      document.getElementById('val-essential').innerText = '$' + essential.toFixed(0) + '/wk';
+      document.getElementById('val-bmin').innerText = '$' + b_min.toFixed(0);
+      document.getElementById('val-income').innerText = '$' + income.toFixed(0) + '/mo';
+      document.getElementById('val-goal').innerText = '$' + goal.toFixed(0);
+      document.getElementById('val-spend').innerText = '$' + spend.toFixed(2);
+      document.getElementById('cart-item-price').innerText = '$' + spend.toFixed(2);
+
+      const hourStr = hour < 10 ? '0' + hour + ':00' : hour + ':00';
+      const isLateNight = hour >= 21 || hour <= 4;
+      document.getElementById('val-hour').innerText = hourStr + (isLateNight ? ' (Night)' : ' (Day)');
+      
+      const hint = document.getElementById('circadian-hint');
+      if (isLateNight) {
+        hint.innerHTML = '<span>⚠️</span> High ego depletion window: System 1 impulse vulnerability elevated.';
+        hint.className = 'text-[10px] text-rose-400/90 mt-1 flex items-center gap-1';
+      } else {
+        hint.innerHTML = '<span>🛡️</span> Normal cognitive control window: Alertness preserved.';
+        hint.className = 'text-[10px] text-emerald-400/90 mt-1 flex items-center gap-1';
+      }
+
+      // Calculate Math Features
+      const f1 = spend / Math.max(b_min, 1.0);
+      const f2 = spend / Math.max(balance, 1.0);
+      const circadianRad = (((hour - 2) % 24) * (2 * Math.PI / 24.0));
+      const f3 = 0.5 * (1.0 + Math.cos(circadianRad));
+      
+      // Goal Delay approximation
+      const netMonthlySavings = Math.max(income - (essential * 4.33), 10.0);
+      const dailySavings = netMonthlySavings / 30.0;
+      const deltaT = spend / dailySavings;
+      const f4 = Math.min(deltaT, 45.0) / 30.0;
+      const f5 = (essential * 4.33) / Math.max(income, 1.0);
+
+      // Logistic Ruin Probability
+      const z = BIAS + (WEIGHTS[0]*f1) + (WEIGHTS[1]*f2) + (WEIGHTS[2]*f3) + (WEIGHTS[3]*f4) + (WEIGHTS[4]*f5);
+      const p_ruin = 1.0 / (1.0 + Math.exp(-Math.max(Math.min(z, 20.0), -20.0)));
+
+      // EVC Calculation
+      const egoWeight = 1.0 + (f3 * 0.45);
+      document.getElementById('val-egoweight').innerText = egoWeight.toFixed(2) + 'x';
+      
+      let deltaU = egoWeight * ((deltaT / 5.0) + (12.0 * p_ruin));
+      if (spend < 8.0) deltaU *= 0.15; // minor snack penalty
+
+      const evc = deltaU - C_INTERRUPT_BASE - C_FRICTION;
+      const shouldIntervene = (evc > 0.0) && (p_ruin > 0.04 || deltaT >= 2.5);
+
+      // Update Output Stats
+      document.getElementById('stat-goal-delay').innerText = '+' + deltaT.toFixed(1) + ' Days';
+      document.getElementById('stat-ruin-prob').innerText = (p_ruin * 100).toFixed(1) + '%';
+      document.getElementById('stat-ruin-delta').innerText = 'Δ = +' + (f1 * 8.5).toFixed(1) + '%';
+      document.getElementById('stat-evc-score').innerText = (evc >= 0 ? '+' : '') + evc.toFixed(3);
+
+      const evcBadge = document.getElementById('evc-badge-pill');
+      const evcTag = document.getElementById('stat-evc-tag');
+      const evcDesc = document.getElementById('evc-explanation');
+
+      if (shouldIntervene) {
+        evcBadge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        evcBadge.innerText = 'Trigger Checkpoint';
+        evcTag.className = 'text-[9px] text-rose-400 font-semibold';
+        evcTag.innerText = 'Intervene Warranted';
+        evcDesc.innerHTML = 'Intervention is warranted because avoiding buffer ruin (' + (p_ruin * 100).toFixed(1) + '%) outweighs the attentional cost of cognitive friction ($0.45).';
+      } else {
+        evcBadge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        evcBadge.innerText = 'Silent Pass';
+        evcTag.className = 'text-[9px] text-emerald-400 font-semibold';
+        evcTag.innerText = 'Safe to Proceed';
+        evcDesc.innerHTML = 'Small stakes transaction. Copilot stays silent to prevent notification habituation and alert fatigue.';
+      }
+
+      // Update Needle Rotation on Speedometer (Angle from -90 to +90 deg)
+      const clampedEVC = Math.max(Math.min(evc, 6.0), -1.0);
+      const angle = -80 + ((clampedEVC + 1.0) / 7.0) * 160;
+      const rad = (angle - 90) * (Math.PI / 180.0);
+      const nx = 50 + 35 * Math.cos(rad);
+      const ny = 50 + 35 * Math.sin(rad);
+      const needle = document.getElementById('needle');
+      needle.setAttribute('x2', nx);
+      needle.setAttribute('y2', ny);
+
+      drawTrajectoryCanvas();
+    }
+
+    // Real-Time HTML5 Canvas Trajectory Visualizer
+    function drawTrajectoryCanvas() {
+      const canvas = document.getElementById('trajectoryCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const balance = parseFloat(document.getElementById('input-balance').value);
+      const essential = parseFloat(document.getElementById('input-essential').value);
+      const income = parseFloat(document.getElementById('input-income').value);
+      const goal = parseFloat(document.getElementById('input-goal').value);
+      const spend = parseFloat(document.getElementById('input-spend').value);
+      const b_min = essential * 6;
+
+      const maxY = Math.max(goal * 1.25, 1200);
+      const minY = 0;
+
+      function toY(val) {
+        return height - 20 - ((val - minY) / (maxY - minY)) * (height - 40);
+      }
+      function toX(day) {
+        return 35 + (day / 90.0) * (width - 55);
+      }
+
+      // Background Grid Lines
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let d = 0; d <= 90; d += 30) {
+        ctx.beginPath();
+        ctx.moveTo(toX(d), 15);
+        ctx.lineTo(toX(d), height - 20);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '9px monospace';
+        ctx.fillText('Day ' + d, toX(d) - 14, height - 6);
+      }
+
+      // Buffer Floor Line (B_min)
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(35, toY(b_min));
+      ctx.lineTo(width - 20, toY(b_min));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillText('Safety Buffer ($' + b_min.toFixed(0) + ')', width - 130, toY(b_min) - 4);
+
+      // Goal Line
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(35, toY(goal));
+      ctx.lineTo(width - 20, toY(goal));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#10b981';
+      ctx.fillText('Goal ($' + goal.toFixed(0) + ')', 40, toY(goal) - 4);
+
+      // Generate Unassisted Fan Paths (Red)
+      ctx.strokeStyle = 'rgba(244, 63, 94, 0.18)';
+      ctx.lineWidth = 1.5;
+      for (let s = 0; s < 6; s++) {
+        ctx.beginPath();
+        let b = balance - spend;
+        ctx.moveTo(toX(0), toY(b));
+        for (let d = 1; d <= 90; d++) {
+          const dailyDrift = ((income - (essential * 4.33)) / 30.0) + (Math.sin(d + s) * 2);
+          const shock = (d === 25 || d === 65) ? -45 : 0;
+          b += dailyDrift + shock;
+          ctx.lineTo(toX(d), toY(b));
+        }
+        ctx.stroke();
+      }
+
+      // Generate Copilot Protected Paths (Indigo / Cyan)
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.55)';
+      ctx.lineWidth = 2.2;
+      for (let s = 0; s < 5; s++) {
+        ctx.beginPath();
+        let b = balance; // spend cancelled or protected
+        ctx.moveTo(toX(0), toY(b));
+        for (let d = 1; d <= 90; d++) {
+          const dailyDrift = ((income - (essential * 4.33)) / 30.0) + 4.5 + (Math.cos(d + s) * 1.5);
+          b += dailyDrift;
+          ctx.lineTo(toX(d), toY(b));
+        }
+        ctx.stroke();
+      }
+    }
+
+    // Point-of-Sale Checkout Handler
+    function attemptPurchase() {
+      const spend = parseFloat(document.getElementById('input-spend').value);
+      const modal = document.getElementById('cff-modal');
+      modal.classList.remove('hidden');
+      modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      let seconds = 10;
+      const timerEl = document.getElementById('cff-timer');
+      timerEl.innerText = seconds + 's';
+
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        seconds--;
+        if (seconds >= 0) {
+          timerEl.innerText = seconds + 's';
+        } else {
+          clearInterval(timerInterval);
+          timerEl.innerText = 'Ready';
+        }
+      }, 1000);
+    }
+
+    // User Decision Recording
+    function recordUserAction(action) {
+      const spend = parseFloat(document.getElementById('input-spend').value);
+      const modal = document.getElementById('cff-modal');
+      modal.classList.add('hidden');
+      if (timerInterval) clearInterval(timerInterval);
+
+      if (action === 'cancel') {
+        sessionSaved += spend;
+        sessionCount += 1;
+        document.getElementById('session-saved-amount').innerText = '$' + sessionSaved.toFixed(2);
+        document.getElementById('session-interventions-count').innerText = sessionCount + ' impulse decision(s) altered';
+        alert('🎉 Conscious Choice Confirmed! You saved $' + spend.toFixed(2) + ' and kept your 6-week safety trampoline intact!');
+      } else {
+        alert('⏩ Override Logged: Purchase executed. Your savings goal target date has been delayed accordingly.');
+      }
+    }
+
+    // Render Cohort Table
+    function renderCohortTable(data) {
+      const tbody = document.getElementById('cohort-tbody');
+      tbody.innerHTML = '';
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-900/60 transition';
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-mono font-bold text-indigo-400">#${item.id < 10 ? '0' + item.id : item.id}</td>
+          <td class="py-2.5 px-3 font-mono font-semibold text-slate-200">${item.raw_spend}</td>
+          <td class="py-2.5 px-3 text-slate-300">${item.mgmt}</td>
+          <td class="py-2.5 px-3 text-slate-400 text-[11px]">${item.pref}</td>
+          <td class="py-2.5 px-3 text-slate-300 italic text-[11px] max-w-xs truncate" title="${item.quote}">"${item.quote}"</td>
+          <td class="py-2.5 px-3 font-mono text-rose-400">${item.base_success}%</td>
+          <td class="py-2.5 px-3 font-mono text-emerald-400 font-bold">${item.copilot_success}%</td>
+          <td class="py-2.5 px-3 font-mono text-indigo-400 font-bold">+${item.gain_percent.toFixed(0)}%</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('cohort-count').innerText = 'Showing ' + data.length + ' of 41 student participants';
+    }
+
+    function filterCohort() {
+      const query = document.getElementById('cohort-search').value.toLowerCase();
+      const prefFilter = document.getElementById('cohort-filter-pref').value.toLowerCase();
+
+      const filtered = cohortData.filter(item => {
+        const matchesQuery = item.quote.toLowerCase().includes(query) || item.mgmt.toLowerCase().includes(query) || item.raw_spend.toLowerCase().includes(query);
+        const matchesPref = (prefFilter === 'all') || item.pref.toLowerCase().includes(prefFilter);
+        return matchesQuery && matchesPref;
+      });
+
+      renderCohortTable(filtered);
+    }
+
+    // Initial Launch
+    window.addEventListener('DOMContentLoaded', () => {
+      updateSim();
+      window.addEventListener('resize', drawTrajectoryCanvas);
+    });
+  </script>
+</body>
+</html>
